@@ -1,0 +1,44 @@
+### Create Loan
+POST http://localhost:1323/loans
+Content-Type: application/json
+
+{
+    "borrower_id": 123,
+    "principal": 100000,
+    "rate": 0.05,
+    "roi": 0.07,
+    "agreement_link": "https://example.com/agreement.com"
+}
+
+@id = 1990782447402356736
+
+### Approve Loan
+PUT http://localhost:1323/loans/{{id}}/approve
+Content-Type: application/json
+
+{
+    "validator_id": 456,
+    "proof_url": "https://example.com/proof.jpg",
+    "approved_at": "2023-08-15T10:00:00Z"
+}
+
+### Invest Loan
+POST http://localhost:1323/loans/{{id}}/invest
+Content-Type: application/json
+
+{
+    "investor_id": 789,
+    "amount": 50000,
+    "invested_at": "2023-08-15T10:00:00Z"
+}
+
+### Disburse Loan
+PUT http://localhost:1323/loans/{{id}}/disburse
+Content-Type: application/json
+
+{
+    "disbursed_at": "2023-08-15T10:00:00Z",
+    "officer_id": 101,
+    "agreement_url": "https://example.com/agreement.com"
+
+}
