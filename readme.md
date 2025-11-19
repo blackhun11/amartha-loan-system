@@ -24,22 +24,27 @@ flowchart TD
 ### Loan State Machine
 
 ```mermaid
-stateDiagram-v2
-    [*] --> Proposed
-    Proposed --> Approved: Admin Approval
-    Approved --> Invested: Full Funding
-    Invested --> Disbursed: Payout
-    Disbursed --> [*]
-    
-    state Proposed {
-        Entry: Validate borrower info
-    }
-    state Approved {
-        Entry: Set approval metadata
-    }
-    state Invested {
-        Entry: Track investments
-    }
+flowchart TB
+    Start([Start]) --> Proposed
+    Proposed -->|Admin Approval| Approved
+    Approved -->|Full Funding| Invested
+    Invested -->|Payout| Disbursed
+    Disbursed --> Finish([End])
+
+    subgraph Proposed_State [Proposed]
+        direction TB
+        PEntry([Entry: Validate borrower info])
+    end
+
+    subgraph Approved_State [Approved]
+        direction TB
+        AEntry([Entry: Set approval metadata])
+    end
+
+    subgraph Invested_State [Invested]
+        direction TB
+        IEntry([Entry: Track investments])
+    end
 ```
 
 ## Key Packages
@@ -65,7 +70,28 @@ sequenceDiagram
     U->>R: Save()
     R-->>U: Loan
     U-->>H: Loan
-    H-->>C: 201 Created
+    H-->>C: 200 OK
+
+    C->>H: PUT /loans/:id/approve
+    H->>U: ApproveLoan()
+    U->>R: Update()
+    R-->>U: Loan
+    U-->>H: Loan
+    H-->>C: 200 OK
+
+    C->>H: PUT /loans/:id/invest
+    H->>U: InvestLoan()
+    U->>R: Update()
+    R-->>U: Loan
+    U-->>H: Loan
+    H-->>C: 200 OK
+
+    C->>H: PUT /loans/:id/disburse
+    H->>U: DisburseLoan()
+    U->>R: Update()
+    R-->>U: Loan
+    U-->>H: Loan
+    H-->>C: 200 OK
 ```
 
 ## Development Setup
