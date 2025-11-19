@@ -73,9 +73,8 @@ func (a application) serveHTTP() {
 	loanGroup.POST("/:id/invest", a.AddInvestment)
 	loanGroup.PUT("/:id/disburse", a.DisburseLoan)
 
-	// TODO: Create API To get loan detail
-	loanGroup.GET("/:id", nil)
-	loanGroup.GET("", nil)
+	loanGroup.GET("/:id", a.GetLoan)
+	loanGroup.GET("", a.GetLoans)
 
 	h2s := &http2.Server{}
 	h1s := &http.Server{

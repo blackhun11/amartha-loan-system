@@ -318,3 +318,73 @@ func TestDisburseLoanHandler(t *testing.T) {
 		assert.ErrorContains(t, err, "usecase error")
 	})
 }
+
+func TestGetLoanHandler(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	e := echo.New()
+	e.Validator = &CustomValidator{validator: validator.New()}
+	mockUsecase := loanmock.NewMockUsecase(ctrl)
+	handler := httpHandler.NewLoanHandler(mockUsecase)
+
+	t.Run("success get loan", func(t *testing.T) {
+		mockUsecase.EXPECT().FindByID(gomock.Any(), int64(1)).Return(&model.Loan{ID: 1}, nil)
+
+		req := httptest.NewRequest(http.MethodGet, "/loans/1", nil)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/loans/:id")
+		c.SetParamNames("id")
+		c.SetParamValues("1")
+
+		assert.NoError(t, handler.GetLoan(c))
+		assert.Equal(t, http.StatusOK, rec.Code)
+	})
+
+	t.Run("invalid loan ID", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/loans/invalid", nil)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetParamNames("id")
+		c.SetParamValues("invalid")
+
+		err := handler.GetLoan(c)
+		assert.ErrorContains(t, err, "invalid")
+	})
+
+}
+
+func TestGetLoansHandler(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	e := echo.New()
+	e.Validator = &CustomValidator{validator: validator.New()}
+	mockUsecase := loanmock.NewMockUsecase(ctrl)
+	handler := httpHandler.NewLoanHandler(mockUsecase)
+
+	t.Run("success get loans", func(t *testing.T) {
+		mockUsecase.EXPECT().FindAll(gomock.Any()).Return([]*model.Loan{{ID: 1}, {ID: 2}}, nil)
+
+		req := httptest.NewRequest(http.MethodGet, "/loans", nil)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/loans")
+
+		assert.NoError(t, handler.GetLoans(c))
+		assert.Equal(t, http.StatusOK, rec.Code)
+	})
+
+	t.Run("failure", func(t *testing.T) {
+		mockUsecase.EXPECT().FindAll(gomock.Any()).Return(nil, errors.New("usecase error"))
+
+		req := httptest.NewRequest(http.MethodGet, "/loans", nil)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/loans")
+
+		err := handler.GetLoans(c)
+		assert.ErrorContains(t, err, "usecase error")
+	})
+}

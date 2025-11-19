@@ -119,3 +119,33 @@ func (h *LoanHandler) DisburseLoan(c echo.Context) error {
 		"loan": loan,
 	})
 }
+
+func (h *LoanHandler) GetLoans(c echo.Context) error {
+	loans, err := h.uc.FindAll(c.Request().Context())
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	return Success(c, http.StatusOK, map[string]interface{}{
+		"loans": loans,
+	})
+}
+
+func (h *LoanHandler) GetLoan(c echo.Context) error {
+	req := new(request.GetLoanRequest)
+	if err := c.Bind(req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+	if err := c.Validate(req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
+	loan, err := h.uc.FindByID(c.Request().Context(), req.ID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	return Success(c, http.StatusOK, map[string]interface{}{
+		"loan": loan,
+	})
+}

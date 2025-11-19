@@ -10,7 +10,7 @@ Content-Type: application/json
     "agreement_link": "https://example.com/agreement.com"
 }
 
-@id = 1990782447402356736
+@id = 1990966857712013312
 
 ### Approve Loan
 PUT http://localhost:1323/loans/{{id}}/approve
@@ -42,3 +42,9 @@ Content-Type: application/json
     "agreement_url": "https://example.com/agreement.com"
 
 }
+
+### Get Loans
+GET http://localhost:1323/loans
+
+### Get Loan by ID
+GET http://localhost:1323/loans/{{id}}

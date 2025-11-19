@@ -21,6 +21,22 @@ func TestLoanUsecase(t *testing.T) {
 	pubsubMock := pubsubrepo.NewMock()
 	uc := loan.NewUsecase(repoMock, pubsubMock)
 
+	t.Run("FindAll", func(t *testing.T) {
+		repoMock.EXPECT().FindAll(gomock.Any()).Return([]*model.Loan{{ID: 1}, {ID: 2}}, nil)
+
+		loans, err := uc.FindAll(context.Background())
+		assert.NoError(t, err)
+		assert.Len(t, loans, 2)
+	})
+
+	t.Run("FindByID", func(t *testing.T) {
+		repoMock.EXPECT().FindByID(gomock.Any(), int64(1)).Return(&model.Loan{ID: 1}, nil)
+
+		loan, err := uc.FindByID(context.Background(), 1)
+		assert.NoError(t, err)
+		assert.Equal(t, int64(1), loan.ID)
+	})
+
 	t.Run("CreateLoan", func(t *testing.T) {
 		repoMock.EXPECT().Save(gomock.Any(), gomock.Any()).Return(nil)
 		err := uc.CreateLoan(context.Background(), &model.Loan{})

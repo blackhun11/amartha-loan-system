@@ -29,3 +29,7 @@ type DisburseLoanRequest struct {
 	AgreementURL string    `json:"agreement_url" validate:"required"`
 	DisbursedAt  time.Time `json:"disbursed_at"`
 }
+
+type GetLoanRequest struct {
+	ID int64 `param:"id" validate:"required"`
+}

@@ -12,6 +12,7 @@ import (
 
 //go:generate mockgen -source=loan.go -destination=mock/loan_mock.go -package=mock
 type Repository interface {
+	FindAll(ctx context.Context) ([]*model.Loan, error)
 	Save(ctx context.Context, loan *model.Loan) error
 	FindByID(ctx context.Context, id int64) (*model.Loan, error)
 	Update(ctx context.Context, loan *model.Loan) error
@@ -34,6 +35,18 @@ func NewRepository() Repository {
 		snowflakeNode: node,
 		loans:         make(map[int64]*model.Loan),
 	}
+}
+
+func (r *repository) FindAll(ctx context.Context) ([]*model.Loan, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	loans := make([]*model.Loan, 0, len(r.loans))
+	for _, loan := range r.loans {
+		loans = append(loans, loan)
+	}
+
+	return loans, nil
 }
 
 func (r *repository) Save(ctx context.Context, loan *model.Loan) error {

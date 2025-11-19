@@ -99,3 +99,33 @@ func (mr *MockUsecaseMockRecorder) DisburseLoan(ctx, loanID, disbursement any) *
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisburseLoan", reflect.TypeOf((*MockUsecase)(nil).DisburseLoan), ctx, loanID, disbursement)
 }
+
+// FindAll mocks base method.
+func (m *MockUsecase) FindAll(ctx context.Context) ([]*model.Loan, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindAll", ctx)
+	ret0, _ := ret[0].([]*model.Loan)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindAll indicates an expected call of FindAll.
+func (mr *MockUsecaseMockRecorder) FindAll(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockUsecase)(nil).FindAll), ctx)
+}
+
+// FindByID mocks base method.
+func (m *MockUsecase) FindByID(ctx context.Context, id int64) (*model.Loan, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByID", ctx, id)
+	ret0, _ := ret[0].(*model.Loan)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByID indicates an expected call of FindByID.
+func (mr *MockUsecaseMockRecorder) FindByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByID", reflect.TypeOf((*MockUsecase)(nil).FindByID), ctx, id)
+}

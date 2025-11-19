@@ -13,6 +13,12 @@ import (
 func TestRepository(t *testing.T) {
 	repo := loan.NewRepository()
 
+	t.Run("FindAll", func(t *testing.T) {
+		loans, err := repo.FindAll(context.TODO())
+		assert.NoError(t, err)
+		assert.Len(t, loans, 0)
+	})
+
 	t.Run("Save and FindByID", func(t *testing.T) {
 		l := &model.Loan{Principal: 1000}
 		err := repo.Save(context.TODO(), l)

@@ -12,6 +12,8 @@ import (
 
 //go:generate mockgen -source=loan.go -destination=mock/loan_mock.go -package=mock
 type Usecase interface {
+	FindAll(ctx context.Context) ([]*model.Loan, error)
+	FindByID(ctx context.Context, id int64) (*model.Loan, error)
 	CreateLoan(ctx context.Context, loan *model.Loan) error
 	ApproveLoan(ctx context.Context, loanID int64, approval model.Approval) (loan *model.Loan, err error)
 	AddInvestment(ctx context.Context, loanID int64, investment model.Investment) (loan *model.Loan, err error)
@@ -25,6 +27,14 @@ type usecase struct {
 
 func NewUsecase(repo loan.Repository, pubsub pubsub.Mock) Usecase {
 	return &usecase{repo: repo, pubsub: pubsub}
+}
+
+func (uc *usecase) FindAll(ctx context.Context) ([]*model.Loan, error) {
+	return uc.repo.FindAll(ctx)
+}
+
+func (uc *usecase) FindByID(ctx context.Context, id int64) (*model.Loan, error) {
+	return uc.repo.FindByID(ctx, id)
 }
 
 func (uc *usecase) CreateLoan(ctx context.Context, loan *model.Loan) error {
